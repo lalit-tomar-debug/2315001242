@@ -4,3 +4,9 @@
 {"timestamp":"2026-06-10T06:15:53.430Z","level":"info","message":"Fetching depots from API"}
 {"timestamp":"2026-06-10T06:15:53.439Z","level":"info","message":"Fetching vehicles from API"}
 {"timestamp":"2026-06-10T06:15:53.652Z","level":"error","message":"Scheduler failed","error":"Request failed with status code 401"}
+{"timestamp":"2026-06-10T06:30:12.751Z","level":"info","message":"Fetching depots from API"}
+{"timestamp":"2026-06-10T06:30:12.929Z","level":"info","message":"Fetching vehicles from API"}
+{"timestamp":"2026-06-10T06:30:13.215Z","level":"error","message":"Scheduler failed","error":"Request failed with status code 401"}
+{"timestamp":"2026-06-10T06:42:36.390Z","level":"info","message":"Fetching depots from API"}
+{"timestamp":"2026-06-10T06:42:36.757Z","level":"info","message":"Fetching vehicles from API"}
+{"timestamp":"2026-06-10T06:42:37.143Z","level":"error","message":"Scheduler failed","error":"Request failed with status code 401"}

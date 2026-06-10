@@ -1,7 +1,7 @@
 {
   "name": "addordassignmnet",
   "version": "1.0.0",
-  "description": "",
+  "description": "��#\u0000 \u00002\u00003\u00001\u00005\u00000\u00000\u00001\u00002\u00004\u00002\u0000\r\u0000 \u0000#\u0000 \u00002\u00003\u00001\u00005\u00000\u00000\u00001\u00002\u00004\u00002\u0000\r\u0000 \u0000",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,5 +9,16 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lalit-tomar-debug/2315001242.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lalit-tomar-debug/2315001242/issues"
+  },
+  "homepage": "https://github.com/lalit-tomar-debug/2315001242#readme",
+  "dependencies": {
+    "axios": "^1.17.0"
+  }
 }

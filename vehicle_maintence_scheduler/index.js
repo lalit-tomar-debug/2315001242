@@ -1,30 +1,26 @@
 const axios = require('axios');
-const logger = require('../logging_middleware/logger');
+const { Log, ACCESS_TOKEN } = require('../logging_middleware/logger');
 
 const BASE_URL = 'http://4.224.186.213/evaluation-service';
-const AUTH_TOKEN = 'RPsgYt';
-
-const headers = { Authorization: `Bearer ${AUTH_TOKEN}` };
+const headers = { Authorization: `Bearer ${ACCESS_TOKEN}` };
 
 async function fetchDepots() {
-  logger.info('Fetching depots from API');
+  await Log('backend', 'info', 'service', 'Fetching depots');
   const res = await axios.get(`${BASE_URL}/depots`, { headers });
-  logger.info('Depots fetched', { count: res.data.depots.length });
+  await Log('backend', 'info', 'service', `Depots fetched: ${res.data.depots.length}`);
   return res.data.depots;
 }
 
 async function fetchVehicles() {
-  logger.info('Fetching vehicles from API');
+  await Log('backend', 'info', 'service', 'Fetching vehicles');
   const res = await axios.get(`${BASE_URL}/vehicles`, { headers });
-  logger.info('Vehicles fetched', { count: res.data.vehicles.length });
+  await Log('backend', 'info', 'service', `Vehicles fetched: ${res.data.vehicles.length}`);
   return res.data.vehicles;
 }
 
-// 0/1 Knapsack — maximize Impact within MechanicHours budget
 function knapsack(tasks, budget) {
   const n = tasks.length;
   const dp = Array.from({ length: n + 1 }, () => Array(budget + 1).fill(0));
-
   for (let i = 1; i <= n; i++) {
     const { Duration, Impact } = tasks[i - 1];
     for (let w = 0; w <= budget; w++) {
@@ -34,8 +30,6 @@ function knapsack(tasks, budget) {
       }
     }
   }
-
-  // Backtrack to find which tasks were selected
   let w = budget;
   const selected = [];
   for (let i = n; i > 0; i--) {
@@ -44,7 +38,6 @@ function knapsack(tasks, budget) {
       w -= tasks[i - 1].Duration;
     }
   }
-
   return {
     selectedTasks: selected,
     totalImpact: dp[n][budget],
@@ -54,37 +47,31 @@ function knapsack(tasks, budget) {
 
 async function main() {
   try {
+    await Log('backend', 'info', 'handler', 'Scheduler started');
     const [depots, vehicles] = await Promise.all([
       fetchDepots(),
       fetchVehicles(),
     ]);
 
-    console.log('\n======= VEHICLE MAINTENANCE SCHEDULER =======\n');
+    console.log('\n====== VEHICLE MAINTENANCE SCHEDULER ======\n');
 
     for (const depot of depots) {
-      logger.info(`Running scheduler for depot ${depot.ID}`, {
-        budget: depot.MechanicHours,
-      });
-
+      await Log('backend', 'info', 'domain', `Processing depot ${depot.ID}`);
       const result = knapsack(vehicles, depot.MechanicHours);
-
-      logger.info(`Result for depot ${depot.ID}`, {
-        totalImpact: result.totalImpact,
-        hoursUsed: result.totalDuration,
-        tasksSelected: result.selectedTasks.length,
-      });
+      await Log('backend', 'info', 'domain', `Depot ${depot.ID} impact: ${result.totalImpact}`);
 
       console.log(`--- Depot ${depot.ID} | Budget: ${depot.MechanicHours}h ---`);
       console.log(`Max Impact: ${result.totalImpact} | Hours Used: ${result.totalDuration}`);
-      console.log(`Tasks selected (${result.selectedTasks.length}):`);
-      result.selectedTasks.forEach((t) => {
+      console.log(`Tasks selected: ${result.selectedTasks.length}`);
+      result.selectedTasks.forEach(t => {
         console.log(`  TaskID: ${t.TaskID} | Duration: ${t.Duration}h | Impact: ${t.Impact}`);
       });
       console.log('');
     }
 
+    await Log('backend', 'info', 'handler', 'Scheduler completed');
   } catch (err) {
-    logger.error('Scheduler failed', { error: err.message });
+    await Log('backend', 'error', 'handler', `Scheduler error: ${err.message}`.slice(0, 48));
     console.error('Error:', err.message);
   }
 }
